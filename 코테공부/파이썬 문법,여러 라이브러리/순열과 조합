@@ -20,18 +20,18 @@ print(result)
 from itertools imiport combinations
 data =['A','B','C']
 
-result = list(permutations(data,2))
+result = list(combinations(data,2))
 ->2개를 뽑는 모든 조합을 구하는 것
 
 중복 순열과 중복 조합
-from itertools import product ->중복 순열을 구할 때 product 라이브러리 사용
+from itertools import prodct ->중복 순열을 구할 때 product 라이브러리 사용
 
 data =['A','B','C']
 
-result = list(permutations(data,2))
+result = list(product(data,2))
 ->2개를 뽑는 모든 순열 구하기(중복 허용)
 
-from itertools import product 
+from itertools import combinations_with_replacement 
 ->중복 조합을 구할 때 combinations_with_replacement 라이브러리 사용
 
 data =['A','B','C']

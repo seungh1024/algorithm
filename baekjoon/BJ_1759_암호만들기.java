@@ -46,7 +46,7 @@ public class BJ_1759_암호만들기 {
 				System.out.println("check: "+check+","+alpha);
 //				System.out.println(alpha);
 			}else if("aeiou".contains(alpha)) {
-				permutation(L,C,cnt+1,start+1,data,s+alpha,check,++aeiou);
+				permutation(L,C,cnt+1,start+1,data,s+alpha,check,aeiou+1);
 				System.out.println("aeiou: "+aeiou);
 			}
 			

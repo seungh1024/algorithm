@@ -14,20 +14,20 @@ public class P_올바른괄호의갯수 {
     public int solution(int n) {
         int answer = 0;
         result = 0;
-        dfs(n,0,0);
+        dfs(n,0);
         return result;
     }
 
-    public static void dfs(int left, int right, int index){
+    public static void dfs(int left, int right){
         if(left == 0 && right == 0){
             result++;
             return;
         }
         if(left > 0){ // left = true
-            dfs(left-1,right+1, index+1);
+            dfs(left-1,right+1);
         }
         if(right > 0){
-            dfs(left, right-1, index+1);
+            dfs(left, right-1);
         }
     }
 }

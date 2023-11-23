@@ -39,33 +39,27 @@ public class P_미로탈출명령어 {
             }
         }
 
-
-        int xSize = Math.abs(r-x);
-        int ySize = Math.abs(c-y);
-
-        if(xSize+ySize > k) return answer;
-
-        if(r>x){
-            for(int i = 0; i < xSize;i++){
+        while(k>0){
+            if(r>x){
+                x++;
+                k--;
                 sb.append("d");
-            }
-        }
-        if(c<y){
-            for(int i = 0; i < ySize; i++){
+            }else if(c<y){
+                y--;
+                k--;
                 sb.append("l");
-            }
-        }else{
-            for(int i = 0; i < ySize; i++){
+            }else if(c > y){
+                y++;
+                k--;
                 sb.append("r");
-            }
-        }
-        if(r<x){
-            for(int i = 0; i < xSize; i++){
+            }else if(r < x){
+                x--;
+                k--;
                 sb.append("u");
             }
         }
 
-        if(sb.length()>0){
+        if(x==r && y == c){
             answer = sb.toString();
         }
 

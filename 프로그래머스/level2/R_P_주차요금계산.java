@@ -21,7 +21,8 @@ public class R_P_주차요금계산 {
 			}else{
 				plusCharge(num, time);
 			}
-
+			ArrayList
+			RandomAccess;
 		}
 		int lastTime = 23*60+59;
 		for(Map.Entry<String,Integer> entry : map.entrySet()){

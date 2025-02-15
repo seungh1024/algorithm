@@ -2,41 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int G = Integer.parseInt(br.readLine());
 
 		long left = 1;
-		long right = 2;
+		long right = 1;
 
-		List<Long> list = new ArrayList<>();
-		while (left < right) {
-			// System.out.println("left = "+left+ ", right = "+right);
-			long r = right*right;
-			long l = left*left;
-			long v = r-l;
-			if (v == G) {
-				list.add(right);
-			}
-			if (v > G) {
-				left++;
-			} else {
+		StringBuilder sb = new StringBuilder();
+		do {
+			long rr = right * right;
+			long ll = left * left;
+			if (rr - ll == G) {
+				sb.append(right).append("\n");
 				right++;
+			} else if (rr - ll < G) {
+				right++;
+			} else {
+				left++;
 			}
+			// System.out.println("left = "+left + ", right = "+right);
 
-			// if (r - l > 100_000) {
-			// 	// break;
-			// }
-		}
-		if (list.size() == 0) {
+		} while (left < right);
+
+		if (sb.length() == 0) {
 			System.out.println(-1);
 		} else {
-			StringBuilder sb = new StringBuilder();
-			for (long i : list) {
-				sb.append(i).append("\n");
-			}
 			System.out.println(sb);
 		}
-
 	}
 }

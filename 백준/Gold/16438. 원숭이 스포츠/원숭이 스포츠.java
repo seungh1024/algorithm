@@ -3,30 +3,28 @@ import java.util.*;
 
 public class Main {
 	public static int N;
-	public static boolean[][] visited;
+	public static boolean[][] monkey;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
+		monkey = new boolean[8][N];
 
-		visited = new boolean[8][N];
-
-		find(false, 0, 0, N);
-
+		find(true, 0, 0, N);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= 7; i++) {
 			for (int j = 0; j < N; j++) {
-				if (visited[i][j]) {
+				if (monkey[i][j]) {
 					sb.append('A');
 				} else {
 					sb.append('B');
-				}
+				} 
 			}
 			sb.append("\n");
 		}
 		System.out.println(sb);
 	}
-
+	
 	public static void find(boolean flag, int idx, int left, int right) {
 		if (idx > 7) {
 			return;
@@ -34,7 +32,7 @@ public class Main {
 
 		for (int i = left; i < right; i++) {
 			if (!flag) {
-				visited[idx][i] = true;
+				monkey[idx][i] = true;
 			}
 		}
 

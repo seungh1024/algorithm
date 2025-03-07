@@ -1,16 +1,15 @@
 import java.io.*;
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class Main {
-	public static int[][] data;
+	public static int[][] data = new int[10][10];
+	public static int total = 0;
+	public static int result = Integer.MAX_VALUE;
 	public static int[] count = {0, 5, 5, 5, 5, 5};
-	public static int result;
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		data = new int[10][10];
-		int total = 0;
+
 		for (int i = 0; i < 10; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < 10; j++) {
@@ -21,78 +20,72 @@ public class Main {
 			}
 		}
 
-		result = Integer.MAX_VALUE;
-		find(0, 0, total,0);
-		if (result == Integer.MAX_VALUE) {
-			result = -1;
+		if (total == 0) {
+			System.out.println(0);
+		} else {
+			find(0, 0, 0,0);
+			if (result == Integer.MAX_VALUE) {
+				result = -1;
+			}
+			System.out.println(result);
 		}
 
-		System.out.println(result);
 	}
 
-	public static void find(int x, int y, int total, int cnt) {
-
-		if (total == 0 ) {
+	public static void find(int x, int y, int sum, int cnt) {
+		if (sum == total) {
 			result = Math.min(result, cnt);
 			return;
 		}
-
-		if (cnt >= result) {
+		if (x == 10) {
 			return;
 		}
 
-
-		if (data[x][y] == 1) {
-			for (int i = 5; i > 0; i--) {
-				if (isValid(x, x + i, y, y + i) && count[i] > 0) {
-					changeValue(x, x + i, y, y + i, 0);
-					count[i]--;
-					if (y + 1 >= 10) {
-						find(x + 1, 0, total -(i*i), cnt+1);
-					} else {
-						find(x, y + 1, total - (i*i),cnt+1);
-					}
-					count[i]++;
-					changeValue(x, x + i, y, y + i, 1);
-				}
-			}
-		} else {
+		if (data[x][y] == 0) {
 			if (y + 1 >= 10) {
-				find(x + 1,0,total, cnt);
+				find(x + 1, 0, sum, cnt);
 			} else {
-				find(x, y + 1,total, cnt);
+				find(x, y + 1, sum, cnt);
+			}
+			return;
+		}
+
+		for (int i = 5; i > 0; i--) {
+			if(count[i] == 0 || x+i > 10 || y+i > 10) continue;
+
+			boolean flag = false;
+			for (int a = x; a < x + i; a++) {
+				for (int b = y; b < y + i; b++) {
+					if (data[a][b] != 1) {
+						flag = true;
+						break;
+					}
+				}
+				if(flag) break;
+			}
+
+			if (!flag) {
+				// System.out.println("x = " + x + ", y = " + y);
+				// System.out.println("i = "+i);
+				count[i] --;
+				for (int a = x; a < x + i; a++) {
+					for (int b = y; b < y + i; b++) {
+						data[a][b] = 0;
+					}
+				}
+				if (y + 1 >= 10) {
+					find(x + 1, 0, sum + i * i, cnt+1);
+				} else {
+					find(x, y + 1, sum + i * i,cnt+1);
+				}
+
+				for (int a = x; a < x + i; a++) {
+					for (int b = y; b < y + i; b++) {
+						data[a][b] = 1;
+					}
+				}
+				count[i] ++;
 			}
 		}
-
-	}
-
-
-	public static boolean isValid(int x, int xend, int y, int yend) {
-		if(xend > 10 || yend > 10) return false;
-
-		for (int i = x; i < xend; i++) {
-			for(int j = y; j < yend; j++) {
-				if(data[i][j] == 0) return false;
-			}
-		}
-
-		return true;
-	}
-
-
-	public static void changeValue(int x, int xend, int y, int yend, int num) {
-		for (int i = x; i < xend; i++) {
-			for (int j = y; j <yend; j++) {
-				data[i][j] = num;
-			}
-		}
-	}
-
-	public static void printData() {
-		System.out.println("===== print data ======");
-		for (int i = 0; i < 10; i++) {
-			System.out.println(Arrays.toString(data[i]));
-		}
-
 	}
 }

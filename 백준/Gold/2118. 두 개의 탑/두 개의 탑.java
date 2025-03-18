@@ -2,52 +2,47 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N;
-	public static int[] data;
-	public static int[] sum;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		data = new int[N+1];
-		sum = new int[N+1];
-		for (int i = 1; i <= N; i++) {
-			data[i] = Integer.parseInt(br.readLine());
-			sum[i] += data[i] + sum[i - 1];
+		int N = Integer.parseInt(br.readLine());
+		long[] data = new long[N];
+
+		long sum = 0;
+		for (int i = 0; i < N; i++) {
+			data[i] = Long.parseLong(br.readLine());
+			sum += data[i];
 		}
-		// System.out.println(Arrays.toString(sum));
 
 		int left = 0;
-		int right = 1;
-		int range = 0;
-		int max = 0;
-		while (true) {
-			int rightValue = Math.abs(sum[right] - sum[left]);
-			int leftValue = sum[N] - rightValue;
+		int right = 0;
 
-			if (rightValue <= leftValue) {
-				right++;
-				max = Math.max(max, rightValue);
-			} else {
-				left ++;
-				max = Math.max(max, leftValue);
-			}
+		long now = 0;
+		long max = 0;
+		for (; left < N; left++) {
+			while (now <= sum) {
+				now += data[right];
+				sum -= data[right];
+				right = (right + 1) % N;
 
-			if (right > N) {
-				right %= N;
-				range++;
+				long min = Math.min(now, sum);
+				max = Math.max(max, min);
+				// System.out.println("left = " + left + ", right = " + right + ", max = " + max +", min = "+min);
+
+				if (now > sum) {
+					break;
+				}
+
+
 			}
-			if (left > N) {
-				left %= N;
-			}
-			if (range > 2) {
-				break;
-			}
+			sum += data[left];
+			now -= data[left];
+			long min = Math.min(now, sum);
+			max = Math.max(max, min);
+
+			// System.out.println("=======");
+
 		}
+
 		System.out.println(max);
-
-
 	}
-
-
 }

@@ -1,24 +1,25 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static char[] rings;
-	public static char[][] input;
-
+	public static char[] input;
+	public static char[][] data;
 	public static int N, M;
 	public static int[][][] dp;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		rings = br.readLine().toCharArray();
-
+		input = br.readLine().toCharArray();
 		char[] arr1 = br.readLine().toCharArray();
 		char[] arr2 = br.readLine().toCharArray();
-		N = rings.length;
+		N = input.length;
 		M = arr1.length;
-		input = new char[2][M];
-		input[0] = arr1;
-		input[1] = arr2;
+		data = new char[2][M];
+		data[0] = arr1;
+		data[1] = arr2;
+
 		dp = new int[2][N][M];
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < N; j++) {
@@ -32,26 +33,25 @@ public class Main {
 		System.out.println(sum);
 	}
 
-	public static int find(int upDownIdx, int ringIdx, int idx) {
-		if (ringIdx >= N) {
+	public static int find(int upDownIdx, int inputIdx, int dataIdx) {
+		if (inputIdx >= N) {
 			return 1;
 		}
-		if (idx >= M) {
+		if (dataIdx >= M) {
 			return 0;
 		}
 
-		if(dp[upDownIdx][ringIdx][idx] != -1) {
-			return dp[upDownIdx][ringIdx][idx];
+		if (dp[upDownIdx][inputIdx][dataIdx] != -1) {
+			return dp[upDownIdx][inputIdx][dataIdx];
 		}
 
-
 		int cnt = 0;
-		for (int i = idx; i < M; i++) {
-			if (input[upDownIdx][i] == rings[ringIdx]) {
-				cnt += find((upDownIdx + 1) % 2, ringIdx + 1, i + 1);
+		for (int i = dataIdx; i < M; i++) {
+			if (data[upDownIdx][i] == input[inputIdx]) {
+				cnt += find((upDownIdx + 1) % 2, inputIdx + 1, i + 1);
 			}
 		}
 
-		return dp[upDownIdx][ringIdx][idx] = cnt;
+		return dp[upDownIdx][inputIdx][dataIdx] = cnt;
 	}
 }

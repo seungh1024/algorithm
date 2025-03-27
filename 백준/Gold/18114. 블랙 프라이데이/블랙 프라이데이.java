@@ -1,67 +1,67 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N, C;
-	public static int[] data;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		C = Integer.parseInt(st.nextToken());
-		data = new int[N];
+		int N = Integer.parseInt(st.nextToken());
+		int C = Integer.parseInt(st.nextToken());
+
 		st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) {
+		int[] data = new int[N+1];
+		for (int i = 1; i <= N; i++) {
 			data[i] = Integer.parseInt(st.nextToken());
 		}
 
 		Arrays.sort(data);
 
-		boolean result = false;
-		for (int i = 0; i < N && !result; i++) {
-			if (data[i] == C) {
-				result = true;
-				break;
+		for (int i = 1; i <= N; i++) {
+			int a = data[i];
+			if (a == C) {
+				System.out.println(1);
+				return;
 			}
-			for (int j = i + 1; j < N; j++) {
-				if (data[i] + data[j] < C) {
-					if (j + 1 < N) {
-						result |= binarySearch(j+1,C - (data[i] + data[j]));
+			for (int j = i + 1; j <= N; j++) {
+				int b = data[j];
+
+				if (a + b > C) {
+					continue;
+				} else if (a + b == C) {
+					System.out.println(1);
+					return;
+				}
+
+				// System.out.println("a = " + a + ", b=  " + b);
+				if (j + 1 <= N) {
+					int idx = binarySearch(j + 1, N, C - (a + b), data);
+					if (a + b + data[idx] == C) {
+						System.out.println(1);
+						return;
 					}
-				} else if (data[i] + data[j] == C) {
-					result = true;
-					break;
 				}
 			}
 		}
 
-		if (result) {
-			System.out.println(1);
-		} else {
-			System.out.println(0);
-		}
-
+		System.out.println(0);
 	}
 
-	public static boolean binarySearch(int start, int target) {
-		int end = N-1;
+	public static int binarySearch(int start, int end, int C,int[] data) {
 
+		// System.out.println("start = "+start +", end = "+end);
 		while (start < end) {
 			int mid = (start + end) / 2;
-			int value = data[mid];
 
-			if (value >= target) {
+			if (data[mid] >= C) {
 				end = mid;
 			} else {
 				start = mid+1;
 			}
 		}
 
-		if (data[start] == target) {
-			return true;
-		}
-
-		return false;
+		// System.out.println("result = "+start);
+		return start;
 	}
 }

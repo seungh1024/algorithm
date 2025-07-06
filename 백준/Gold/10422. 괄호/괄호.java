@@ -1,22 +1,18 @@
-
-
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static long[] dp;
-	public static long MOD = 1000000007;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int T = Integer.parseInt(br.readLine());
-		dp = new long[5001];
+		long[] dp = new long[5001];
 		dp[0] = 1;
 		dp[2] = 1;
-		for (int i = 2; i <= 2500; i++) {
-			for (int j = 0; j < i; j++) {
-				dp[i * 2] += dp[j * 2] * dp[(i - 1 - j) * 2];
-				dp[i*2] %= MOD;
+		long mod = 1000000007;
+		for (int i = 4; i <= 5000; i += 2) {
+			for (int j = 2; j <= i; j += 2) {
+				dp[i] += dp[j-2] * dp[i-j];
+				dp[i] %= mod;
 			}
 		}
 		StringBuilder sb = new StringBuilder();
@@ -24,8 +20,16 @@ public class Main {
 			int L = Integer.parseInt(br.readLine());
 			sb.append(dp[L]).append("\n");
 		}
-		System.out.println(sb);
 
+		System.out.println(sb);
+		// (())
+		// ()()
+		//
+		// (())()
+		// ()(())
+		// ()()()
+		// (()())
+		// ((()))
 	}
 
 }

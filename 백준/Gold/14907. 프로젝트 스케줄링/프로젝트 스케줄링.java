@@ -5,13 +5,12 @@ import java.util.*;
 
 public class Main {
 	public static List<Integer>[] list;
+	public static int[] count;
 	public static int[] job;
 	public static List<Integer> start;
-	public static int[] count;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
 		list = new ArrayList[26];
 		for (int i = 0; i < 26; i++) {
 			list[i] = new ArrayList<>();
@@ -19,55 +18,55 @@ public class Main {
 		job = new int[26];
 		count = new int[26];
 		start = new ArrayList<>();
-
 		while (true) {
 			String input = br.readLine();
-			if(input == null || input.isEmpty() || input.isBlank()) break;
-
+			if (input == null || input.isBlank() || input.isBlank()) {
+				break;
+			}
 			StringTokenizer st = new StringTokenizer(input);
-			Character now = st.nextToken().charAt(0);
-			int time = Integer.parseInt(st.nextToken());
-			int idx = now - 'A';
-			job[idx] = time;
+			int to = st.nextToken().charAt(0) - 'A';
+			int cost = Integer.parseInt(st.nextToken());
+			job[to] = cost;
 
 			if (st.hasMoreTokens()) {
-				char[] arr = st.nextToken().toCharArray();
-				for (char c : arr) {
-					int lastIdx = c - 'A';
-					list[lastIdx].add(idx);
-					count[idx]++;
+				char[] data = st.nextToken().toCharArray();
+				for (char c : data) {
+					int from = c - 'A';
+					list[from].add(to);
+					count[to]++;
 				}
 			} else {
-				start.add(idx);
+				start.add(to);
 			}
 		}
+
 		find();
 	}
 
 	public static void find() {
-		int max = 0;
 		Queue<int[]> q = new ArrayDeque<>();
 		for (int i : start) {
 			q.offer(new int[] {i, job[i]});
-			max = Math.max(max, job[i]);
 		}
 
-		int[] maxValue = new int[26];
+		int[] max = new int[26];
 
+		int result = 0;
 		while (!q.isEmpty()) {
 			int[] now = q.poll();
 
+			result = Math.max(result, now[1]);
 
-			for (int next : list[now[0]]) {
+			for(int next : list[now[0]]) {
 				count[next]--;
-				maxValue[next] = Math.max(maxValue[next], now[1] + job[next]);
-				max = Math.max(max, maxValue[next]);
-				if(count[next] > 0) continue;
-
-				q.offer(new int[] {next, maxValue[next]});
+				max[next] = Math.max(max[next], now[1] + job[next]);
+				if (count[next] == 0) {
+					q.offer(new int[]{next,max[next]});
+				}
 			}
 		}
-		// System.out.println(Arrays.toString(maxValue));
-		System.out.println(max);
+
+		System.out.println(result);
+		// System.out.println(Arrays.toString(max));
 	}
 }

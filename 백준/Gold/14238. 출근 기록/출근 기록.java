@@ -1,44 +1,36 @@
 
 
 import java.io.*;
-import java.util.Stack;
+import java.util.*;
 
 public class Main {
-	public static char[] data;
-	public static int[] cnt;
 	public static int N;
+	public static char[] data;
+	public static int[] count;
 	public static boolean[][][][][] visited;
-	public static Stack<Integer> stack;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		char[] input = br.readLine().toCharArray();
 		N = input.length;
-		cnt = new int[3];
-
-		for (int i = 0; i < N; i++) {
-			if (input[i] == 'A') {
-				cnt[0]++;
-			} else if (input[i] == 'B') {
-				cnt[1]++;
-			} else if (input[i] == 'C') {
-				cnt[2]++;
+		data = new char[N];
+		count = new int[3];
+		for (char c : input) {
+			if (c == 'A') {
+				count[0]++;
+			} else if (c == 'B') {
+				count[1]++;
+			} else if (c == 'C') {
+				count[2]++;
 			}
 		}
 
-		stack = new Stack<>();
 		visited = new boolean[51][51][51][3][3];
-		if (find(0, 0, 0, 0, 0)) {
+
+		if (find(0, 0, 0, 0, 0, 0)) {
 			StringBuilder sb = new StringBuilder();
-			while (!stack.isEmpty()) {
-				int now = stack.pop();
-				if (now == 0) {
-					sb.append("A");
-				} else if (now == 1) {
-					sb.append("B");
-				} else {
-					sb.append("C");
-				}
+			for (char c : data) {
+				sb.append(c);
 			}
 			System.out.println(sb);
 		} else {
@@ -46,12 +38,13 @@ public class Main {
 		}
 	}
 
-	public static boolean find(int a, int b, int c, int last1, int last2) {
-		// System.out.println("a = "+a +", b = "+b +", c = "+c + ", last1 = "+last1 + ", last 2 = "+last2);
-		if (a == cnt[0] && b == cnt[1] && c == cnt[2]) {
+	public static boolean find(int idx,int a, int b, int c, int last1, int last2) {
+		// System.out.println(
+		// 	"idx = " + idx + " a = " + a + ", b = " + b + ", c = " + c + ", last1 = " + last1 + ", last2 = " + last2 + ", count = "+Arrays.toString(count));
+		if (a == count[0] && b == count[1] && c == count[2]) {
 			return true;
 		}
-		if (a > cnt[0] || b > cnt[1] || c > cnt[2]) {
+		if (a > count[0] || b > count[1] || c > count[2]) {
 			return false;
 		}
 		if (visited[a][b][c][last1][last2]) {
@@ -59,21 +52,21 @@ public class Main {
 		}
 		visited[a][b][c][last1][last2] = true;
 
-		if (cnt[0] > 0) {
-			if (find(a + 1, b, c, 0, last1)) {
-				stack.push(0);
+		if (count[0] > 0) {
+			data[idx] = 'A';
+			if (find(idx+1,a + 1, b, c, 0, last1)) {
 				return true;
 			}
 		}
-		if (cnt[1] > 0) {
-			if (last1 != 1 && find(a, b + 1, c, 1, last1)) {
-				stack.push(1);
+		if (count[1] > 0) {
+			data[idx] = 'B';
+			if (last1 != 1 && find(idx + 1, a, b + 1, c, 1, last1)) {
 				return true;
 			}
 		}
-		if (cnt[2] > 0) {
-			if (last1 != 2 && last2 != 2 && find(a, b, c + 1, 2, last1)) {
-				stack.push(2);
+		if (count[2] > 0) {
+			data[idx] = 'C';
+			if (last1 != 2 && last2 != 2 && find(idx + 1, a, b, c + 1, 2, last1)) {
 				return true;
 			}
 		}

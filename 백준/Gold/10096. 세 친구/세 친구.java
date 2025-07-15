@@ -14,46 +14,78 @@ public class Main {
 			System.out.println("NOT POSSIBLE");
 			return;
 		}
-		int size = input.length/2;
-		int resultCnt = 0;
-		String result = null;
+
+		char[] c1 = new char[N / 2+1];
+		char[] c2 = new char[N / 2+1];
+		char[] c3 = new char[N / 2+1];
+		char[] c4 = new char[N / 2+1];
+		for (int i = 0; i < N / 2; i++) {
+			c1[i] = input[i];
+			c3[i] = input[i];
+		}
+		c1[N/2] = 'a';
+		c3[N/2] = input[N/2];
+		for (int i = N/2; i < N; i++) {
+			c2[i-N/2] = input[i];
+			if (i + 1 < N) {
+
+				c4[i-N/2] = input[i+1];
+			}
+		}
+		c4[N/2] = 'a';
+
+		int cnt1 = 0;
+		int cnt2 = 0;
 		Set<String> set = new HashSet<>();
-		for (int i = 0; i < N; i++) {
-			StringBuilder sb1 = new StringBuilder();
-			StringBuilder sb2 = new StringBuilder();
-			int cnt = 0;
-			int idx = 0;
-			while (cnt < size) {
-				if (idx != i) {
-					cnt++;
-					sb1.append(input[idx]);
-				}
-				idx++;
+		StringBuilder sb1 = new StringBuilder();
+		StringBuilder sb2 = new StringBuilder();
+		// System.out.println(Arrays.toString(c1));
+		// System.out.println(Arrays.toString(c2));
+		for (int l = 0, r = 0; l <= N / 2 && r <= N/2; l++, r++) {
+			// System.out.println("l = "+l + ", r = "+r);
+			if (c1[l] != c2[r]) {
+				cnt1++;
+				l--;
+			} else {
+
+				sb1.append(c1[l]);
 			}
-			cnt = 0;
-			while (cnt < size) {
-				if (idx != i) {
-					cnt++;
-					sb2.append(input[idx]);
-				}
-				idx++;
-			}
-			if (sb1.compareTo(sb2) == 0) {
-				if (!set.contains(sb1.toString())) {
-					set.add(sb1.toString());
-					resultCnt++;
-					result = sb1.toString();
-				}
-			}
-			// System.out.println("sb1 = "+sb1 + ", sb2 = "+sb2 + ", equals = "+ sb1.toString().equals(sb2.toString()));
 		}
 
-		if (resultCnt == 0) {
-			result = "NOT POSSIBLE";
-		} else if (resultCnt > 1) {
-			result = "NOT UNIQUE";
+		if (cnt1 <= 1) {
+			set.add(sb1.toString());
 		}
-		System.out.println(result);
+
+		// System.out.println(Arrays.toString(c3));
+		// System.out.println(Arrays.toString(c4));
+		for (int l = 0, r = 0; l <= N / 2 && r <= N/2; l++, r++) {
+			// System.out.println("l = "+l +", r = "+r);
+			if (c3[l] != c4[r]) {
+				cnt2++;
+				r--;
+			} else {
+
+				sb2.append(c4[r]);
+			}
+		}
+
+		if (cnt2 <= 1) {
+			set.add(sb2.toString());
+		}
+		// System.out.println(cnt1 + ", "+ cnt2);
+
+		// System.out.println(sb1 +", "+sb2);
+		if (cnt1<=1 && cnt2 <= 1 && set.size() == 2) {
+			System.out.println("NOT UNIQUE");
+		} else if (cnt1 <= 1) {
+			System.out.println(sb1);
+		} else if (cnt2 <= 1) {
+			System.out.println(sb2);
+		} else {
+			System.out.println("NOT POSSIBLE");
+		}
+
+
 
 	}
 

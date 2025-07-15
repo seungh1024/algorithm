@@ -39,8 +39,8 @@ public class Main {
 		}
 
 		char[] input = br.readLine().toCharArray();
-		int x = 1000000;
-		int y =1000000;
+		long x = 1000000;
+		long y =1000000;
 		StringBuilder sb = new StringBuilder();
 		for (char c : input) {
 			int d = dir.get(c);
@@ -62,7 +62,7 @@ public class Main {
 	// 1 1 4 4 9 9
 	// 1, 4, 9
 	// -> sum[N] - sum[idx] - (x* (N-idx)) + (4*idx) - sum[idx];
-	public static long find(int x, int[] info, long[] infoSum) {
+	public static long find(long x, int[] info, long[] infoSum) {
 		int start = 1;
 		int end = N;
 
@@ -75,31 +75,12 @@ public class Main {
 				start = mid + 1;
 			}
 		}
-		int pos = start - 1; // info[pos] < x 를 만족하는 가장 큰 인덱스
-		long left = Math.abs(1L * x * pos - infoSum[pos]);
-		long right = Math.abs(infoSum[N] - infoSum[pos] - 1L * x * (N - pos));
-		return left + right;
+		start--;
+		// int pos = start - 1; // info[pos] < x 를 만족하는 가장 큰 인덱스
+		// long left = Math.abs(1L * x * pos - infoSum[pos]);
+		// long right = Math.abs(infoSum[N] - infoSum[pos] - 1L * x * (N - pos));
+		// return left + right;
+		return Math.abs(infoSum[N] - infoSum[start] - (x * (N - start))) + Math.abs(x * start - infoSum[start]);
 
-		// if (info[start] > x) {
-		// 	start--;
-		// }
-		//
-		// long sum = 0;
-		// if (start == N) {
-		// 	sum = Math.abs(x * start - infoSum[start]);
-		// } else {
-		// 	if (start == 1) {
-		// 		sum = Math.abs(infoSum[N] - infoSum[start] - x * (N - start));
-		// 	} else {
-		//
-		// 		sum = Math.abs(infoSum[N] - infoSum[start] - (x * (N - start))) + Math.abs(x * start - infoSum[start]);
-		// 	}
-		//
-		// }
-
-		// System.out.println("start = "+start);
-		// System.out.println("sum = "+sum);
-
-		// return sum;
 	}
 }

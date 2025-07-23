@@ -18,61 +18,52 @@ public class Main {
 		list = new ArrayList<>();
 
 		set = new HashSet<>();
+		long[] count = new long[10];
 		for (int i = 0; i < N; i++) {
 			char[] input = br.readLine().toCharArray();
-			list.add(input);
-
+			long temp = 1;
+			for (int j = input.length - 1; j >= 0; j--) {
+				int idx = input[j]-'A';
+				count[idx] += temp;
+				temp*=10;
+			}
 			set.add(input[0]);
 		}
 
-		arr = new int[10];
-		visited = new boolean[10];
-		find(0);
+		// System.out.println(Arrays.toString(count));
+		PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(o -> o[1]));
+
+		for (int i = 0; i < 10; i++) {
+			pq.offer(new long[] {i, count[i]});
+		}
+
+		long result = 0;
+		long num = 0;
+
+		Queue<long[]> q = new ArrayDeque<>();
+		while (!pq.isEmpty()) {
+			long[] now = pq.poll();
+
+			char c = al[(int)now[0]];
+			if (set.contains(c)) {
+				q.offer(now);
+			} else {
+				result += now[1]*num;
+				num++;
+				break;
+			}
+		}
+
+		while (!q.isEmpty()) {
+			pq.offer(q.poll());
+		}
+		while (!pq.isEmpty()) {
+			long[] now = pq.poll();
+			result += now[1]*num;
+			num++;
+		}
+
 		System.out.println(result);
 	}
 
-	public static void find(int idx) {
-		// System.out.println("idx = "+idx);
-		if (idx == 10) {
-			int zero = 0;
-			for (int i = 0; i < 10; i++) {
-				if (arr[i] == 0) {
-					zero = i;
-					break;
-				}
-			}
-			if (set.contains(al[zero])) {
-				return;
-			}
-			// System.out.println(Arrays.toString(arr));
-			long sum = 0;
-
-			for (char[] temp : list) {
-
-				long a = 1;
-				for (int i = temp.length - 1; i >= 0; i--) {
-					sum += (a * arr[temp[i]-'A']);
-					a*=10;
-				}
-				// if (sb.toString().equals("9876543201")) {
-				// 	check = true;
-				// }
-				// if (check) {
-				// 	System.out.println(Arrays.toString(arr));
-				// 	System.out.println(sb);
-				// }
-			}
-			result = Math.max(result, sum);
-			return;
-		}
-
-		for (int i = 0; i < 10; i++) {
-			if(visited[i]) continue;
-			// if(i == 0 && idx == 0 && set.contains(al[i])) continue;
-			visited[i] = true;
-			arr[idx] = i;
-			find(idx + 1);
-			visited[i] = false;
-		}
-	}
 }

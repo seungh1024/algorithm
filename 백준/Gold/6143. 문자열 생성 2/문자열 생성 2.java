@@ -1,77 +1,70 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N;
-	public static char[] data;
-	public static String result;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		data = new char[N];
-		// StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(br.readLine());
+		char[] data = new char[N];
 		for (int i = 0; i < N; i++) {
 			data[i] = br.readLine().charAt(0);
-			// data[i] = st.nextToken().charAt(0);
-
 		}
-		// System.out.println(Arrays.toString(data));
 
+		Deque<Character> dq = new ArrayDeque<>();
+		
 		int left = 0;
 		int right = N-1;
-		StringBuilder sb = new StringBuilder();
-		int cnt = 0;
+
+
 		while (left <= right) {
+			// System.out.println("left = "+left + ", right = "+right);
 			if (data[left] < data[right]) {
-				sb.append(data[left]);
+				dq.offer(data[left]);
 				left++;
 			} else if (data[left] > data[right]) {
-				sb.append(data[right]);
+				dq.offer(data[right]);
 				right--;
 			} else {
 
-				int l = left+1;
-				int r = right - 1;
+				int l = left;
+				int r = right;
+				boolean isLeft = false;
 
-				boolean flag = false;
-				while (l <= r) {
-					if (data[l] < data[r]) {
-						sb.append(data[left]);
-						left++;
-						flag = true;
+				while (l< r) {
+					if (data[l] != data[r]) {
+
+						if (data[l] < data[r]) {
+							isLeft = true;
+						}
 						break;
-					} else if (data[l] > data[r]) {
-						sb.append(data[right]);
-						right--;
-						flag = true;
-						break;
-					} else {
-						l++;
-						r--;
 					}
+					l++;
+					r--;
 				}
-				if (!flag) {
-					sb.append(data[left]);
+
+				// System.out.println("l = "+l +", r = "+r +", isLeft = "+isLeft +", isRight = "+isRight);
+				if (isLeft) {
+					dq.offer(data[left]);
 					left++;
+				} else  {
+					dq.offer(data[right]);
+					right--;
 				}
+
 			}
-			cnt++;
-			if (cnt % 80 == 0) {
+		}
+
+		StringBuilder sb = new StringBuilder();
+		int line = 0;
+		while (!dq.isEmpty()) {
+			sb.append(dq.poll());
+			line++;
+			if (line % 80 == 0) {
 				sb.append("\n");
 			}
 		}
-		System.out.print(sb);
+		System.out.println(sb);
 	}
-
-	public static char find(int idx, int limit, int move) {
-		char now = data[idx];
-		while (idx != limit && data[idx] == now) {
-			idx += move;
-		}
-
-		return data[idx];
-	}
-
-
 }

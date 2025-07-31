@@ -1,5 +1,4 @@
 
-
 import java.io.*;
 import java.util.*;
 
@@ -13,20 +12,17 @@ public class Main {
 		// }
 
 		int[] dp = new int[10001];
-		for (int i = 1; i <= 10000; i++) {
-			dp[i] = i;
-		}
+		// for (int i = 1; i <= 10000; i++) {
+		// 	dp[i] = i;
+		// }
+		Arrays.fill(dp, 10000);
+		dp[1] = 1;
 		int temp = 1;
-		int[] facto = new int[10];
-		for (int i = 2; i < 10; i++) {
-			temp*=i;
-			facto[i] = temp;
-		}
-		for (int i = 2; i <= 10000; i++) {
-			for (int j = 2; j < 10; j++) {
-				if (i == facto[j]) {
-					dp[i] = Math.min(dp[i], dp[j]);
-				}
+		for (int i = 1; i <= 10000; i++) {
+
+			temp *= i;
+			if (temp >= 10000) {
+				temp = 10001;
 			}
 
 			for (int j = 1; j <= i; j++) {
@@ -36,7 +32,12 @@ public class Main {
 				if (i + j <= 10000) {
 					dp[i + j] = Math.min(dp[i + j], dp[j] + dp[i]);
 				}
+				
 			}
+            if (temp <= 10000) {
+                dp[temp] = Math.min(dp[temp], dp[i]);
+            }
+
 		}
 		System.out.println(dp[N]);
 	}

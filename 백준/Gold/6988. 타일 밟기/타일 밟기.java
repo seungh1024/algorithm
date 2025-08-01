@@ -9,29 +9,35 @@ public class Main {
 		int N = Integer.parseInt(br.readLine());
 		int[] data = new int[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		Map<Integer, Long>[] dp = new HashMap[N];
+
+		int[] temp = new int[1_000_001];
+		Arrays.fill(temp, -1);
 		for (int i = 0; i < N; i++) {
 			data[i] = Integer.parseInt(st.nextToken());
-			dp[i] = new HashMap<>();
+			temp[data[i]] = i;
 		}
 
+		long[][] dp = new long[N][N];
+
 		long result = 0;
-		
-		for (int i = 1; i < N; i++) {
-			for (int j = 0; j < i; j++) {
-				int idx = data[i] - data[j];
-				if (dp[j].get(idx) == null) {
-					dp[i].put(idx, (long)data[i] + data[j]);
+		for (int i = 0; i < N; i++) {
+			for (int j = i + 1; j < N; j++) {
+				int idx = -1;
+				long v = data[i] - (data[j] - data[i]);
+				if (v >= 0) {
+					idx = temp[(int)v];
+				}
+				if (idx == -1) {
+					dp[i][j] = data[i] + data[j];
 				} else {
-					long v = dp[j].get(idx) + data[i];
-					dp[i].put(idx, v);
-					result = Math.max(result, v);
+					dp[i][j] = dp[idx][i] + data[j];
+					result = Math.max(result, dp[i][j]);
 				}
 			}
 		}
 
 		System.out.println(result);
-		
+
 
 	}
 }

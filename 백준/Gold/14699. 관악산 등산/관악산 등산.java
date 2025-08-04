@@ -40,14 +40,14 @@ public class Main {
 		for (int i = 1; i <= N; i++) {
 			list.add(new int[] {i, height[i]});
 		}
-		Collections.sort(list, Comparator.comparingInt(o -> o[1]));
+		// Collections.sort(list, Comparator.comparingInt(o -> o[1]));
 
 		for (int i = 1; i <= N; i++) {
 			// System.out.println("start = "+i);
 			int[] now = list.get(i-1);
 			int idx = now[0];
 			if(dp[idx] != -1) continue;
-			find(idx, 1);
+			find(idx);
 		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= N; i++) {
@@ -61,7 +61,7 @@ public class Main {
 		System.out.println(sb);
 	}
 
-	public static int find(int idx, int cnt) {
+	public static int find(int idx) {
 		if (list[idx].size() == 0) {
 			// System.out.println("end = "+idx);
 			return 1;
@@ -74,7 +74,7 @@ public class Main {
 		int max = 0;
 		for (int next : list[idx]) {
 			// System.out.println("next = "+next);
-			max  = Math.max(max,find(next, cnt + 1)+1);
+			max  = Math.max(max,find(next)+1);
 		}
 
 		return dp[idx] = max;

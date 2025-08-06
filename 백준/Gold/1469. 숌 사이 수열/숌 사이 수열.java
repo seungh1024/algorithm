@@ -1,100 +1,65 @@
-import java.io.*;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * https://www.acmicpc.net/problem/1469
+ */
 public class Main {
-	public static int[] data;
-	public static int N;
-	public static int[] shom;
-	public static int maxSize;
-	public static int[] check;
-	public static int[] result;
 
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		data = new int[N];
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) {
-			data[i] = Integer.parseInt(st.nextToken());
-		}
+    public static int N;
+    public static int[] elements;
+    public static ArrayList<String> list = new ArrayList<>();
 
-		maxSize = N*2;
-		shom = new int[maxSize];
-		check = new int[17];
-		result = new int[maxSize];
-		Arrays.fill(result,17);
+    public static void main(String[] args) throws IOException {
+        backtracking();
+    }
 
-		Arrays.sort(data);
-		find(0);
+    public static void backtracking() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        elements = new int[N];
 
-		boolean flag = false;
-		for (int i = 0; i < maxSize; i++) {
-			if (result[i] != 17) {
-				flag = true;
-				break;
-			}
-		}
-		if (flag) {
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < maxSize; i++) {
-				sb.append(result[i]).append(" ");
-			}
-			System.out.println(sb);
-		}else{
-			System.out.println(-1);
-		}
+        st = new StringTokenizer(br.readLine());
+        for (int i=0 ; i < N; i++) elements[i] = Integer.parseInt(st.nextToken());
+        Arrays.sort(elements);
 
-	}
+        dfs_back(0, new String[N * 2], new boolean[N]);
+        System.out.println(list.size() == 0 ? "-1" : list.get(0));
 
-	public static void find(int index) {
-		if (index >= maxSize) {
-			// System.out.println(Arrays.toString(shom));
-			boolean flag = false;
-			for (int i = 0; i < maxSize; i++) {
-				if (shom[i] < result[i]) {
-					flag = true;
-					break;
-				} else if (shom[i] > result[i]) {
-					break;
-				}
-			}
-			if (flag) {
-				for (int i = 0; i < maxSize; i++) {
-					result[i] = shom[i];
-				}
-			}
+    }
 
-			return;
-		}
+    public static void dfs_back(int depth, String[] answer, boolean[] visited) {
+        if (N * 2 == depth) {
+            list.add(String.join(" ", answer));
+            return;
+        }
 
-		for (int i = 0; i < N; i++) {
-			if (check[data[i]] == 0) {
-				shom[index] = data[i];
-				// shom[index+data[i]+1] = data[i];
-				check[data[i]] ++;
-				find(index+1);
-				check[data[i]] --;
-			} else if (check[data[i]] == 1) {
-				shom[index] = data[i];
-				// System.out.println(Arrays.toString(shom));
-				int left = 0;
-				int right = index;
-				for (int j = 0; j < index; j++) {
-					if (shom[j] == data[i]) {
-						left = j;
-						break;
-					}
-				}
-				// System.out.println("index = " +index + ", right = "+right + ", left = "+left);
-				if(right-left-1 != data[i]){
-					continue;
-				}
-				// System.out.println("success");
+        if (list.size() > 0) return;
 
-				check[data[i]] ++;
-				find(index+1);
-				check[data[i]]--;
-			}
-		}
-	}
+        if (answer[depth] != null) {
+            dfs_back(depth + 1, answer, visited);
+            return;
+        }
+
+        for (int i=0; i < N ; i++) {
+            if (!visited[i]) {
+                int element = elements[i];
+                if (depth + element + 1 < N * 2 && answer[depth] == null && answer[depth + element + 1] == null) {
+                    visited[i] = true;
+                    answer[depth] = answer[depth + element + 1] = String.valueOf(elements[i]);
+                    dfs_back(depth + 1, answer, visited);
+                    answer[depth] = answer[depth + element + 1] = null;
+                    visited[i] = false;
+                }
+            }
+        }
+    }
+
+
+
 }

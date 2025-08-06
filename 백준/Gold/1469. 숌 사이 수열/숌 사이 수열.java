@@ -1,65 +1,65 @@
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-/**
- * https://www.acmicpc.net/problem/1469
- */
 public class Main {
+	public static int N;
+	public static int[] data;
+	public static boolean[] visited;
+	public static int[] arr;
+	public static List<String> list;
 
-    public static int N;
-    public static int[] elements;
-    public static ArrayList<String> list = new ArrayList<>();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		data = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			data[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(data);
 
-    public static void main(String[] args) throws IOException {
-        backtracking();
-    }
+		arr = new int[N * 2];
+		Arrays.fill(arr, -1);
 
-    public static void backtracking() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        elements = new int[N];
+		if (!find(0)) {
+			System.out.println(-1);
+		}
+	}
 
-        st = new StringTokenizer(br.readLine());
-        for (int i=0 ; i < N; i++) elements[i] = Integer.parseInt(st.nextToken());
-        Arrays.sort(elements);
+	public static boolean find(int idx) {
+		// System.out.println("idx = "+idx + ", arr = "+Arrays.toString(arr));
+		if (idx == 2*N) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < 2 * N; i++) {
+				sb.append(arr[i]).append(" ");
+			}
+			System.out.println(sb);
+			return true;
+		}
 
-        dfs_back(0, new String[N * 2], new boolean[N]);
-        System.out.println(list.size() == 0 ? "-1" : list.get(0));
+		if (arr[idx] != -1) {
+			return find(idx + 1);
+		}
 
-    }
+		for (int i = 0; i < N; i++) {
+			int v = data[i];
+			if(visited[i]) continue;
+			int r = idx+v+1;
+			if(r >= 2*N || arr[r] != -1) continue;
+			visited[i] = true;
+			arr[idx] = v;
+			arr[r] = v;
+			if (find(idx + 1)) {
+				return true;
+			}
+			visited[i] = false;
+			arr[idx] = -1;
+			arr[r] = -1;
+		}
 
-    public static void dfs_back(int depth, String[] answer, boolean[] visited) {
-        if (N * 2 == depth) {
-            list.add(String.join(" ", answer));
-            return;
-        }
-
-        if (list.size() > 0) return;
-
-        if (answer[depth] != null) {
-            dfs_back(depth + 1, answer, visited);
-            return;
-        }
-
-        for (int i=0; i < N ; i++) {
-            if (!visited[i]) {
-                int element = elements[i];
-                if (depth + element + 1 < N * 2 && answer[depth] == null && answer[depth + element + 1] == null) {
-                    visited[i] = true;
-                    answer[depth] = answer[depth + element + 1] = String.valueOf(elements[i]);
-                    dfs_back(depth + 1, answer, visited);
-                    answer[depth] = answer[depth + element + 1] = null;
-                    visited[i] = false;
-                }
-            }
-        }
-    }
-
-
-
+		return false;
+	}
 }

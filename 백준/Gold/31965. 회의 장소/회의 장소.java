@@ -30,6 +30,7 @@ public class Main {
 			st = new StringTokenizer(br.readLine());
 			int from = Integer.parseInt(st.nextToken());
 			int to = Integer.parseInt(st.nextToken());
+			
 			long result = find(from, to);
 			sb.append(result).append("\n");
 		}
@@ -66,6 +67,10 @@ public class Main {
 
 		int right = start-1;
 
+		if (left >= right) {
+			return 0;
+		}
+
 		long maxCost = Math.max(getCost(left, left, right), getCost(right, left, right));
 		long minCost = getCost((left + right) / 2, left, right);
 
@@ -76,11 +81,10 @@ public class Main {
 	}
 
 	public static long getCost(int target, int left, int right) {
-		long result = 0;
 		long r = Math.abs(sum[right] - sum[target] - data[target]*(long)(right-(target)));
 		long l = Math.abs(data[target]*(long)(target-left) - (sum[target-1]-sum[left-1]));
 		// System.out.println("l = "+l + ", r = "+r);
-		result += l+r;
-		return result;
+
+		return l+r;
 	}
 }

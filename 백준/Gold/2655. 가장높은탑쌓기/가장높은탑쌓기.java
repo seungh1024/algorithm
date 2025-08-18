@@ -6,38 +6,35 @@ import java.util.*;
 public class Main {
 	public static int N;
 	public static Data[] data;
-	public static int[] dp;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
-		data = new Data[N+1];
+		data = new Data[N + 1];
 		for (int i = 1; i <= N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
 			int h = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
-			data[i] = new Data(i, a, h, w);
+			data[i] = new Data(i,e, w, h);
 		}
-		data[0] = new Data(0, 0, 0, 0);
-		Arrays.sort(data, Comparator.comparingInt(o -> o.a));
-		dp = new int[N + 1];
+		data[0] = new Data(0, 10001, 10001, 0);
+		Arrays.sort(data, Comparator.comparingInt((Data o) -> -o.e));
+		int[] dp = new int[N + 1];
 
-		int idx = 0;
 		int maxIdx = 0;
 		int maxHeight = 0;
+
+
 		int[] index = new int[N + 1];
 		for (int i = 1; i <= N; i++) {
 			Data now = data[i];
-			// System.out.println("now = "+now);
-			for (int j = i-1; j >= 0; j--) {
+			for (int j = i - 1; j >= 0; j--) {
 				Data last = data[j];
-				if (now.w > last.w) {
-					// System.out.println(now);
+				if (now.w < last.w) {
 					if (dp[j] + now.h > dp[i]) {
 						dp[i] = dp[j] + now.h;
 						index[i] = j;
-						idx = i;
 					}
 				}
 			}
@@ -46,50 +43,34 @@ public class Main {
 				maxHeight = dp[i];
 				maxIdx = i;
 			}
+			// System.out.println("i = "+i +", index = "+Arrays.toString(index));
+			// System.out.println(Arrays.toString(dp));
 		}
-		// System.out.println(Arrays.toString(index));
-		// System.out.println(Arrays.toString(dp));
 
 		int cnt = 0;
 
 		StringBuilder sb = new StringBuilder();
-		Stack<Integer> stack = new Stack<>();
-		idx = maxIdx;
+		int idx = maxIdx;
 		while (idx != 0) {
 			cnt++;
-			stack.push(data[idx].idx);
+			sb.append(data[idx].idx).append("\n");
 			idx = index[idx];
 		}
-		while (!stack.isEmpty()) {
-			sb.append(stack.pop()).append("\n");
-		}
-
 		System.out.println(cnt);
 		System.out.println(sb);
 	}
 
-
 	public static class Data{
 		int idx;
-		int a;
-		int h;
+		int e;
 		int w;
+		int h;
 
-		public Data(int idx, int a, int h, int w) {
+		public Data(int idx, int e, int w, int h) {
 			this.idx = idx;
-			this.a = a;
-			this.h = h;
+			this.e = e;
 			this.w = w;
-		}
-
-		@Override
-		public String toString() {
-			return "Data{" +
-				"idx=" + idx +
-				", a=" + a +
-				", h=" + h +
-				", w=" + w +
-				'}';
+			this.h = h;
 		}
 	}
 }

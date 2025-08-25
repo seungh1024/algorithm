@@ -5,9 +5,7 @@ import java.util.*;
 
 public class Main {
 	public static int N, K;
-	public static int[] data;
-
-
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -19,7 +17,7 @@ public class Main {
 			int v = Integer.parseInt(st.nextToken());
 			list.add(v);
 		}
-
+		
 		int result = 0;
 		for (int i = 19; i >= 0; i--) {
 			List<Integer> temp = new ArrayList<>();
@@ -28,12 +26,12 @@ public class Main {
 					temp.add(v);
 				}
 			}
+
 			if (temp.size() >= K) {
-				result += (1<<i);
-				list = temp;
+				result += (1 << i);
+				list= temp;
 			}
 		}
-
 		System.out.println(result);
 	}
 }

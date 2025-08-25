@@ -1,47 +1,41 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N;
-	public static Data[] data;
-	public static String input;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		input = br.readLine();
-		N = Integer.parseInt(br.readLine());
-
-		data = new Data[N];
+		String s = br.readLine();
+		int N = Integer.parseInt(br.readLine());
+		String[] data = new String[N];
+		int[] point = new int[N];
 		for (int i = 0; i < N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			String s = st.nextToken();
-			int p = Integer.parseInt(st.nextToken());
-			data[i] = new Data(s, p);
+			data[i] = st.nextToken();
+			point[i] = Integer.parseInt(st.nextToken());
 		}
 
-		int size = input.length();
-		int[] dp = new int[size+ 1];
+		int idx = 0;
+		int length = s.length();
+		int[] dp = new int[length];
+		dp[0] = 1;
 
-		for (int i = 1; i <= size; i++) {
-			for (Data d : data) {
-				dp[i] = Math.max(dp[i], dp[i - 1] + 1);
-				if (input.startsWith(d.s, i - 1)) {
-					dp[i + d.s.length() - 1] = Math.max(dp[i + d.s.length() - 1], dp[i - 1] + d.p);
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < N; j++) {
+				if (s.startsWith(data[j], i)) {
+					if (i - 1 >= 0) {
+						dp[i + data[j].length() - 1] = Math.max(dp[i + data[j].length() - 1], dp[i - 1] + point[j]);
+					} else {
+						dp[i + data[j].length() - 1] = point[j];
+					}
 				}
 			}
+			if (i - 1 >= 0) {
+				dp[i] = Math.max(dp[i], dp[i - 1] + 1);
+			}
 		}
-
 		// System.out.println(Arrays.toString(dp));
-		System.out.println(dp[size]);
-	}
-
-	public static class Data{
-		String s;
-		int p;
-
-		public Data(String s, int p) {
-			this.s = s;
-			this.p = p;
-		}
+		System.out.println(dp[length-1]);
 	}
 }

@@ -27,7 +27,10 @@ public class Main {
 	}
 
 	public static int find(int left, int right, int turn) {
-		if (left > right) {
+		if (left >= right) {
+			if (turn == 0) {
+				return dp[left][right][turn] = data[left];
+			}
 			return 0;
 		}
 

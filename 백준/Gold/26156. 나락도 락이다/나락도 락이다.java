@@ -4,43 +4,39 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N;
-	public static char[] data;
-	public static char[] ch = {'R', 'O', 'C', 'K'};
-	public static int[] count;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
+		int N = Integer.parseInt(br.readLine());
+		char[] data = br.readLine().toCharArray();
+		long[] dp = new long[N + 1];
+		dp[0] = 1;
 		long mod = 1000000007;
-
-		long[] dp = new long[4];
-		char[] input = br.readLine().toCharArray();
-		data = new char[N + 1];
-		int idx = 1;
-		for (char c : input) {
-			data[idx++] = c;
+		for (int i = 1; i <= N; i++) {
+			dp[i] = dp[i - 1]*2;
+			dp[i] %= mod;
 		}
+		long o = 0;
+		long c = 0;
+		long k = 0;
 
-		long[] value = new long[N + 1];
-		value[1] = 1;
-		for (int i = 2; i <= N; i++) {
-			value[i] = value[i - 1] * 2 % mod;
-		}
+		long result = 0;
+		for (int i = N-1; i >= 0; i--) {
+			char d = data[i];
+			if (d == 'R') {
+				result = ((result + dp[i] * o % mod) % mod);
 
-		for (int i = N; i > 0; i--) {
-			if (data[i] == 'K') {
-				dp[3]++;
-			} else if (data[i] == 'C') {
-				dp[2] = (dp[2] + dp[3]) % mod;
-			} else if (data[i] == 'O') {
-				dp[1] = (dp[1] + dp[2]) % mod;
-			} else if (data[i] == 'R') {
-				dp[0] = (dp[0] + value[i] * dp[1] % mod) % mod;
+				// System.out.println("cnt = "+cnt +", dp[i] = "+dp[i]);
+			} else if (d == 'O') {
+				o += c;
+				o %= mod;
+			} else if (d == 'C') {
+				c += k;
+				c %= mod;
+			} else if (d == 'K') {
+				k++;
 			}
+			// System.out.println("i = " + i + ", r = " + r + ", o = " + o + ", c = " + c + ", k = " + k);
 		}
-		System.out.println(dp[0]);
-		
+		System.out.println(result);
 	}
-
 }

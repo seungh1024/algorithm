@@ -7,32 +7,30 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+		int[] count = new int[100001];
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int[] dp = new int[100001];
 		for (int i = 0; i < N; i++) {
 			int num = Integer.parseInt(st.nextToken());
-			pq.offer(num);
-			dp[num]++;
+			count[num]++;
 		}
 
-		long sum = 0;
-		while (!pq.isEmpty()) {
-			int now = pq.poll();
-			if(dp[now] ==0) continue;
-
-			long cnt = 0;
-			for (int i = now; i > 0; i--) {
-				if (dp[i] == 0) {
-					break;
+		long result = 0;
+		for (int i = 100000; i > 0; i--) {
+			if(count[i] == 0) continue;
+			while (count[i] > 0) {
+				long cnt = 1;
+				count[i]--;
+				for (int j = i - 1; j > 0; j--) {
+					if (count[j] <= 0) {
+						break;
+					}
+					count[j]--;
+					cnt++;
 				}
-				cnt++;
-				dp[i]--;
+				result += cnt*((long)i);
 			}
-			sum += cnt*now;
 		}
 
-		System.out.println(sum);
-
+		System.out.println(result);
 	}
 }

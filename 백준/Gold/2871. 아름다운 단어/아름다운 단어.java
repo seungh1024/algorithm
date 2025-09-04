@@ -4,55 +4,60 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int  N;
-	public static char[] data;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		data = br.readLine().toCharArray();
+		int N = Integer.parseInt(br.readLine());
+		char[] input = br.readLine().toCharArray();
+		PriorityQueue<Data> pq = new PriorityQueue<>(
+			Comparator.comparing((Data o) -> o.c).thenComparingInt((Data o) -> -o.idx));
 
-		PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt((int[] o) -> o[1]).thenComparingInt(o->-o[0]));
 		for (int i = 0; i < N; i++) {
-			pq.offer(new int[] {i, data[i]});
+			pq.offer(new Data(i, input[i]));
 		}
 
-		boolean turn = true;
 		boolean[] visited = new boolean[N];
+		boolean turn = true;
 		int idx = N-1;
-		StringBuilder a = new StringBuilder();
-		StringBuilder b = new StringBuilder();
 
+		StringBuilder hw = new StringBuilder();
+		StringBuilder sg = new StringBuilder();
 		while (!pq.isEmpty()) {
 			if (turn) {
-
 				while (idx >= 0) {
-					// System.out.println(Arrays.toString(visited));
-					// System.out.println(idx);
 					if (!visited[idx]) {
 						visited[idx] = true;
-						a.append(data[idx]);
-						turn = false;
+						sg.append(input[idx]);
 						break;
 					}
 					idx--;
 				}
-				if(idx < 0) break;
 			} else {
-				int[] now = pq.poll();
-				if(visited[now[0]]) continue;
-				visited[now[0]] = true;
-				b.append(data[now[0]]);
-				turn = true;
+				while (!pq.isEmpty()) {
+					Data now = pq.poll();
+					if(visited[now.idx]) continue;
+					visited[now.idx] = true;
+					hw.append(now.c);
+					break;
+				}
 			}
+			turn = !turn;
 		}
 
-		// System.out.println("a = "+a +", b = "+b);
-		if (b.compareTo(a) < 0) {
+		if (hw.compareTo(sg) < 0) {
 			System.out.println("DA");
 		} else {
 			System.out.println("NE");
 		}
-		System.out.println(b);
+		System.out.println(hw);
+	}
+
+	public static class Data {
+		int idx;
+		char c;
+
+		public Data(int idx, char c) {
+			this.idx = idx;
+			this.c = c;
+		}
 	}
 }

@@ -4,100 +4,154 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int[] number = new int[10];
-	public static int result = 0;
+	public static int[][] board = {
+		{2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40},
+		{10, 13, 16, 19, 25},
+		{20, 22, 24, 25},
+		{30, 28, 27, 26, 25},
+		{25, 30, 35, 40}
+	};
 	public static int[] data;
-	public static int[] score;
-	public static boolean[] visited;
-	public static int[] now;
+	public static boolean[][] visited = new boolean[5][20];
+	public static int result = 0;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		data = new int[10];
 		for (int i = 0; i < 10; i++) {
-			number[i] = Integer.parseInt(st.nextToken());
+			data[i] = Integer.parseInt(st.nextToken());
 		}
 
-		data = new int[200];
-		score = new int[34];
-		for (int i = 0; i < 21; i++) {
-			data[i] = i+1;
-			score[i] = i*2;
-		}
-		// 21이 도착
-		data[21] = 21;
-		for (int i = 22; i < 27; i++) {
-			data[i] = i+1;
-		}
-		// data[5] = 22;
-		data[50] = 22;
-		data[27] = 20;
-		// data[10] = 28;
-		data[100] = 28;
-		data[28] = 29;
-		data[29] = 25;
-		// data[15] = 30;
-		data[150] = 30;
-		data[30] = 31;
-		data[31] = 32;
-		data[32] = 25;
 
-		int num = 13;
-		for (int i = 22; i < 25; i++) {
-			score[i] = num;
-			num+=3;
-		}
-		num = 28;
-		for (int i = 30; i < 33; i++) {
-			score[i] = num;
-			num--;
-		}
-		num = 22;
-		for (int i = 28; i < 30; i++) {
-			score[i] = num;
-			num+=2;
-		}
-		num = 25;
-		for (int i = 25; i <= 27; i++) {
-			score[i] = num;
-			num += 5;
-		}
 
-		visited = new boolean[34];
-		now = new int[4];
-		find(0, 0);
+		find(0,4,0);
 		System.out.println(result);
 	}
 
-	public static void find(int idx, int sum) {
-		if (idx == 10) {
+	public static void find(int idx, int count, int sum) {
+		if (idx >= 10) {
 			result = Math.max(result, sum);
 			return;
 		}
-
-
-		for (int i = 0; i < 4; i++) {
-			int plus = number[idx];
-			int nowIdx = now[i];
-			int next = now[i];
-
-			if (next <= 15 && next % 5 == 0) {
-				next *= 10;
+		if (count > 0) {
+			int x = 0;
+			int y = data[idx]-1;
+			if (y == 4) {
+				x = 1;
+				y = 0;
 			}
-			while (plus-- > 0) {
-				next = data[next];
+			if (!visited[x][y]) {
+				visited[x][y] = true;
+				find(idx + 1, count - 1, sum + board[x][y]);
+				visited[x][y] = false;
 			}
+		}
 
-			if(next != 21 && visited[next]) continue;
-			// System.out.println("i = "+i + ", nowIdx = "+nowIdx+ ", next = "+next + ", plus = "+plus);
-			now[i] = next;
-			visited[nowIdx] = false;
-			visited[next] = true;
-			find(idx + 1, sum + score[next]);
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 20; j++) {
+				if (visited[i][j]) {
+					visited[i][j] = false;
+					if (i == 0) {
+						int x = i;
+						int next = j+data[idx];
+						if(next == 19){
+							x = 4;
+							next = 3;
+						} else if (next == 4) {
+							x = 1;
+							next = 0;
+						} else if (next == 9) {
+							x = 2;
+							next = 0;
+						} else if (next == 14) {
+							x = 3;
+							next = 0;
+						}
+						if (next < 20 && !visited[x][next]) {
+							visited[x][next] = true;
+							find(idx + 1, count, sum + board[x][next]);
+							visited[x][next] = false;
+						} else {
+							find(idx + 1, count, sum);
+						}
+					} else if (i == 1) {
+						int x = i;
+						int y = j+data[idx];
+						if(y==4){
+							x = 4;
+							y = 0;
+						}
+						if(y >= 5){
+							x = 4;
+							y -= 4;
+						}
 
-			visited[next] = false;
-			visited[nowIdx] = true;
-			now[i] = nowIdx;
+						if (x == 4 && y > 3) {
+							find(idx + 1, count, sum);
+						}
+						else if (!visited[x][y]) {
+							visited[x][y] = true;
+							find(idx + 1, count, sum + board[x][y]);
+							visited[x][y] = false;
+						}
+					} else if (i == 2) {
+						int x = i;
+						int y = j+data[idx];
+						if(y==3){
+							x = 4;
+							y = 0;
+						}
+						if(y >= 4){
+							x = 4;
+							y -= 3;
+						}
+
+						if (x == 4 && y > 3) {
+							find(idx + 1, count, sum);
+						}
+						else if ( !visited[x][y]) {
+							visited[x][y] = true;
+							find(idx + 1, count, sum + board[x][y]);
+							visited[x][y] = false;
+						}
+					} else if (i == 3) {
+						int x = i;
+						int y = j+data[idx];
+						if(y==4){
+							x = 4;
+							y = 0;
+						}
+						if(y >= 5){
+							x = 4;
+							y -= 4;
+						}
+
+						if (x == 4 && y > 3) {
+							find(idx + 1, count, sum);
+						}
+						else if (!visited[x][y]) {
+							visited[x][y] = true;
+							find(idx + 1, count, sum + board[x][y]);
+							visited[x][y] = false;
+						}
+					} else if (i == 4) {
+						int x = i;
+						int y = j+data[idx];
+
+						if (x == 4 && y > 3) {
+							find(idx + 1, count, sum);
+						}
+						else if (!visited[x][y]) {
+							visited[x][y] = true;
+							find(idx + 1, count, sum + board[x][y]);
+							visited[x][y] = false;
+						}
+					}
+
+					visited[i][j] = true;
+				}
+			}
 		}
 	}
 }

@@ -4,53 +4,49 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static char[] data;
-	public static int[] dp;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		data = br.readLine().toCharArray();
-		int N= data.length;
-		dp = new int[N];
+		char[] input = br.readLine().toCharArray();
+		int N = input.length;
+		int[] dp = new int[N + 1];
 		Arrays.fill(dp, Integer.MIN_VALUE);
-		if (data[0] == '+') {
+		if (input[0] == '+') {
 			dp[0] = 10;
-			if (N > 1 && data[1] == '-') {
+			if (N > 1 && input[1] == '-') {
 				dp[1] = 11;
 			}
 		} else {
 			dp[0] = 1;
 		}
 
-		for (int i = 0; i < N; i++) {
-			if(dp[i] == Integer.MIN_VALUE || i+2 >= N) continue;
-			int num = 1;
-			if (i + 1 < N && data[i + 1] == '-') {
-				num *= -1;
-			}
+		for (int i = 1; i < N-1; i++) {
+			if(dp[i-1] == Integer.MIN_VALUE) continue;
 
-			if (i + 2 < N) {
-				int value = 0;
-				if (data[i + 2] == '+') {
-					value = 10;
+			if (input[i] == '+') {
+				if (input[i + 1] == '+') {
+					dp[i + 1] = Math.max(dp[i + 1], dp[i - 1] + 10);
+					if (i + 2 < N && input[i + 2] == '-') {
+						dp[i + 2] = Math.max(dp[i + 2], dp[i - 1] + 11);
+					}
 				} else {
-					value = 1;
+					dp[i + 1] = Math.max(dp[i + 1], dp[i - 1] + 1);
 				}
-				dp[i + 2] = Math.max(dp[i + 2], dp[i] + value * num);
-			}
-			if (i + 3 < N) {
-				int value = 0;
-				if (data[i + 2] == '+' && data[i + 3] == '-') {
-					value = 11;
-					dp[i + 3] = Math.max(dp[i + 3], dp[i] + value * num);
-				}
-			}
-			// System.out.println("i = "+ i + ", " +Arrays.toString(dp));
-			// System.out.println("num = "+num);
-		}
-		// System.out.println(Arrays.toString(dp));
-		System.out.println(dp[N-1]);
-	}
 
+			} else {
+				// System.out.println("i = "+i +", data[i+2] = "+input[i+2]);
+				if (input[i + 1] == '+') {
+					dp[i + 1] = Math.max(dp[i + 1], dp[i - 1] - 10);
+					if (i + 2 < N && input[i + 2] == '-') {
+						// System.out.println("??");
+						dp[i + 2] = Math.max(dp[i + 2], dp[i - 1] - 11);
+					}
+				} else {
+					dp[i + 1] = Math.max(dp[i + 1], dp[i - 1] - 1);
+				}
+			}
+		}
+		System.out.println(dp[N-1]);
+		// System.out.println(Arrays.toString(dp));
+	}
 
 }

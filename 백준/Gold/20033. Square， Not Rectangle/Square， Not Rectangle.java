@@ -4,48 +4,55 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+	public static int N;
+	public static int[] data;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
-		int[] data = new int[N];
+		N = Integer.parseInt(br.readLine());
+		data = new int[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) {
 			data[i] = Integer.parseInt(st.nextToken());
 		}
 
-		find(N, data);
+		find();
 	}
 
-	public static void find(int N, int[] data) {
+	public static void find() {
 		int start = 1;
-		int end = 1000000000;
+		int end = 300000;
 
-		int result = 0;
 		while (start < end) {
 			int mid = (start + end) / 2;
 
-			int cnt = 0;
-			int max = 0;
-			for (int i = 0; i < N; i++) {
-				if (data[i] >= mid) {
-					cnt++;
-				} else {
-					max = Math.max(max, cnt);
-					cnt = 0;
-				}
-			}
-			max = Math.max(max, cnt);
-
-			// System.out.println("mid = "+mid + " , max = "+max);
-			if (max >= mid) {
-				result = Math.max(result, mid);
-			}
-			if (max <= mid) {
+			if (!check(mid)) {
 				end = mid;
 			} else {
 				start = mid+1;
 			}
 		}
-		System.out.println(result);
+		if (!check(start)) {
+			start--;
+		}
+		System.out.println(start);
+	}
+
+	public static boolean check(int v) {
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			if (data[i] >= v) {
+				cnt++;
+			} else {
+				if (cnt >= v) {
+					return true;
+				}
+				cnt = 0;
+			}
+		}
+		if (cnt >= v) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -4,64 +4,59 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N, S;
-	public static int[] data;
-	public static int[][] dp;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
+		int N = Integer.parseInt(br.readLine());
+		int[] data = new int[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		data = new int[N];
 		for (int i = 0; i < N; i++) {
 			data[i] = Integer.parseInt(st.nextToken());
 		}
+		int S = Integer.parseInt(br.readLine());
 
-		S = Integer.parseInt(br.readLine());
-
-		int head = 0;
-		while (S > 0 && head<N) {
-			int idx = 0;
-			int max = data[head];
-
-			int range = Math.min(N, head + S+1);
-			for(int i = head+1; i < range; i++){
-				if(data[i] > max){
-					idx = i;
+		List<Integer> list = new ArrayList<>();
+		int range = 10;
+		while (true) {
+			int max = 0;
+			int idx = -1;
+			int cnt = 0;
+			int maxCnt = 0;
+			for (int i = 0; i < N; i++) {
+				if(data[i] == 0) continue;
+				if (data[i] > max) {
 					max = data[i];
+					idx = i;
+					maxCnt = Math.max(maxCnt, cnt);
 				}
-
+				cnt++;
+				if(cnt > S) break;
 			}
-
-			int minus = idx-head;
-			// System.out.println("head = "+head + ", idx = "+idx + ", minus = "+minus + ", S = "+S);
-
-			if(S-minus >= 0 && idx > head) {
-
-				S-= minus;
-				Queue<Integer> q = new ArrayDeque<>();
-				for(int i = 0; i < head; i++){
-					q.offer(data[i]);
-				}
-				q.offer(data[idx]);
-
-				for (int i = head; i < N; i++) {
-					if(i != idx){
-						q.offer(data[i]);
+			if (maxCnt > S) {
+				max = 0;
+				idx = -1;
+				for (int i = 0; i < S; i++) {
+					if (data[i] > max) {
+						max = data[i];
+						idx = i;
 					}
 				}
-				idx = 0;
-				while (!q.isEmpty()) {
-					data[idx++] = q.poll();
-				}
-				// System.out.println(Arrays.toString(data));
+
+				break;
 			}
-			head++;
+			if(idx == -1) break;
+			S-=maxCnt;
+			list.add(data[idx]);
+			data[idx] = 0;
+		}
+		for (int i = 0; i < N; i++) {
+			if (data[i] != 0) {
+				list.add(data[i]);
+			}
 		}
 
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < N; i++) {
-			sb.append(data[i]).append(" ");
+		for (int i : list) {
+			sb.append(i).append(" ");
 		}
 		System.out.println(sb);
 	}

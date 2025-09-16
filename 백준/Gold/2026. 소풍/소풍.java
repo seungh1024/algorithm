@@ -1,11 +1,15 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int K, N, F;
-	public static int[] count;
+	public static int K ,N , F;
+	public static List<Integer>[] list;
 	public static boolean[][] friend;
+	public static int[] arr;
 	public static boolean[] visited;
+	public static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,70 +17,64 @@ public class Main {
 		K = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
 		F = Integer.parseInt(st.nextToken());
+		// list = new ArrayList[N + 1];
+		// for (int i = 0; i <= N; i++) {
+		// 	list[i] = new ArrayList<>();
+		// }
 
-		count = new int[N + 1];
 		friend = new boolean[N + 1][N + 1];
-
 		for (int i = 0; i < F; i++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			count[a]++;
-			count[b]++;
 			friend[a][b] = true;
-			friend[b][a]= true;
+			friend[b][a] = true;
 		}
 
-		visited= new boolean[N+1];
-		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i <= N; i++) {
-			if(count[i] < K-1) continue;
+		visited = new boolean[N + 1];
+		// arr = new int[K];
 
+		for (int i = 1; i <= N; i++) {
 			visited[i] = true;
-			if (find(i, 1)) {
-				for (int j = 1; j <= N; j++) {
-					if (visited[j]) {
-						sb.append(j).append("\n");
-					}
-				}
-				break;
+			if (find(1, i)) {
+				System.out.println(sb);
+				return;
 			}
+
 			visited[i] = false;
 		}
 
-		if (sb.isEmpty()) {
-			System.out.println(-1);
-		} else {
-			System.out.println(sb);
-		}
-
-
+		System.out.println(-1);
 	}
-
-	public static boolean find(int idx, int cnt) {
-		if (cnt == K) {
+	public static boolean find(int idx, int num) {
+		if (idx == K) {
+			for (int i = 1; i <=N; i++) {
+				if (visited[i]) {
+					sb.append(i).append("\n");
+				}
+			}
 			return true;
 		}
 
-		for (int i = idx + 1; i <= N; i++) {
-			if (friend[idx][i] && isFriend(i)) {
-				visited[i] = true;
-				if (find(i, cnt + 1)) {
-					return true;
-				}
-				visited[i] = false;
+		for (int i = num + 1; i <= N; i++) {
+			if(visited[i] || !friend[num][i]) continue;
+			visited[i] = true;
+			if (check(i) && find(idx + 1, i)) {
+				return true;
 			}
+			visited[i] = false;
 		}
 
 		return false;
 	}
 
-	public static boolean isFriend(int idx) {
-		for (int i = 1; i <= N; i++) {
-			if (visited[i] && !friend[idx][i]) {
+	public static boolean check(int target) {
+		for (int i = 1; i < target; i++) {
+			if (visited[i] && !friend[i][target]) {
 				return false;
 			}
 		}
+
 		return true;
 	}
 }

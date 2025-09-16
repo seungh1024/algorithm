@@ -28,10 +28,10 @@ public class Main {
 		}
 
 		String s = "";
-		for (int i = N; i > 0; i--) {
+		for (int i = N-1; i >= 0; i--) {
 			long sum = 0;
 			for (int j = 0; j <= L; j++) {
-				sum += dp[i-1][j];
+				sum += dp[i][j];
 			}
 
 			if (sum < I) {

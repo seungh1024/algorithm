@@ -4,35 +4,28 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+	public static int N, K;
+	public static int[] data;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
-		int[] data = new int[N];
-		int[] count = new int[K + 1];
-
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		data = new int[N];
 		for (int i = 0; i < N; i++) {
 			data[i] = Integer.parseInt(br.readLine());
-			count[data[i]]++;
 		}
-
-		// System.out.println(Arrays.toString(count));
 
 		Set<Integer> set = new HashSet<>();
-		int result = 0;
+		int cnt = 0;
 		for (int i = 0; i < N; i++) {
-			if (!set.contains(data[i])) {
-				set.add(data[i]);
-			}
+			set.add(data[i]);
 			if (set.size() == K) {
+				cnt++;
 				set = new HashSet<>();
-				result++;
 			}
 		}
-
-
-
-		System.out.println(result+1);
+		System.out.println(cnt+1);
 	}
 }

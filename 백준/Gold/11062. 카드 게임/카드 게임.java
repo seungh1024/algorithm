@@ -6,20 +6,20 @@ import java.util.*;
 public class Main {
 	public static int N;
 	public static int[] data;
-	public static int[][][] dp;
+	public static int[][] dp;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine());
 		for (int t = 0; t < T; t++) {
 			N = Integer.parseInt(br.readLine());
-			data = new int[N];
 			StringTokenizer st = new StringTokenizer(br.readLine());
+			data = new int[N];
 			for (int i = 0; i < N; i++) {
 				data[i] = Integer.parseInt(st.nextToken());
 			}
-			dp = new int[N][N][2];
+			dp = new int[N][N];
 			int result = find(0, N - 1, 0);
 			sb.append(result).append("\n");
 		}
@@ -27,25 +27,20 @@ public class Main {
 	}
 
 	public static int find(int left, int right, int turn) {
-		if (left >= right) {
-			if (turn == 0) {
-				return dp[left][right][turn] = data[left];
-			}
+		if (left > right) {
 			return 0;
 		}
 
-		if (dp[left][right][turn] > 0) {
-			return dp[left][right][turn];
+		if (dp[left][right] > 0) {
+			return dp[left][right];
 		}
 
-		int nextTurn = (turn+1)%2;
-		int v = 0;
+		int max = 0;
 		if (turn == 0) {
-			v = Math.max(data[left] + find(left + 1, right, nextTurn), data[right] + find(left, right - 1, nextTurn));
+			max = Math.max(find(left + 1, right, 1) + data[left], find(left, right - 1, 1) + data[right]);
 		} else {
-			v = Math.min(find(left + 1, right, nextTurn), find(left, right - 1, nextTurn));
+			max = Math.min(find(left + 1, right, 0), find(left, right - 1, 0));
 		}
-
-		return dp[left][right][turn] = v;
+		return dp[left][right] = max;
 	}
 }

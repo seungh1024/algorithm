@@ -1,0 +1,29 @@
+-- 코드를 입력하세요
+SELECT CONCAT('/home/grep/src/',UGB.BOARD_ID,'/',UGF.FILE_ID,UGF.FILE_NAME,UGF.FILE_EXT)AS FILE_PATH FROM USED_GOODS_BOARD UGB
+join USED_GOODS_FILE UGF
+on UGB.BOARD_ID = UGF.BOARD_ID
+WHERE UGB.BOARD_ID = (
+    SELECT BOARD_ID
+    FROM USED_GOODS_BOARD
+    ORDER BY VIEWS DESC
+    LIMIT 1
+)
+ORDER BY UGF.FILE_ID DESC;
+
+
+# SELECT UGB.BOARD_ID, UGF.FILE_ID, UGF.FILE_NAME, UGF.FILE_EXT FROM USED_GOODS_BOARD UGB
+# left outer join USED_GOODS_FILE UGF
+# on UGB.BOARD_ID = UGF.BOARD_ID
+# WHERE UGB.BOARD_ID = (
+#     SELECT BOARD_ID
+#     FROM USED_GOODS_BOARD
+#     ORDER BY VIEWS DESC
+#     LIMIT 1
+# );
+# ;
+
+# select ugb.* from used_goods_board ugb
+# order by ugb.views desc;
+
+
+# select * from used_goods_file where board_id = 'B0008';

@@ -15,47 +15,49 @@ public class Main {
 		Deque<Data> dq = new ArrayDeque<>();
 		while (!q.isEmpty()) {
 			char c = q.poll();
+
 			if (!dq.isEmpty()) {
 				Data peek = dq.peekLast();
+
 				int idx = peek.idx + 1;
-				if (peek.idx == -1) {
-					peek.idx = -1;
-				}
-				if (idx != -1 && idx < str.length && str[idx] == c) {
-					if (idx == str.length - 1) {
-						for (int i = peek.idx; i >= 0; i--) {
-
-							dq.pollLast();
-						}
-
-					} else {
-						dq.offer(new Data(c, idx));
-					}
+				// if (peek.idx == -1) {
+				// 	peek.idx = -1;
+				// }
+				if (idx < str.length && str[idx] == c) {
+					dq.offer(new Data(c, idx));
 				} else {
 					if (c == str[0]) {
-						if (str.length != 1) {
-							dq.offer(new Data(c, 0));
-						}
+						dq.offer(new Data(c, 0));
 					} else {
 						dq.offer(new Data(c, -1));
 					}
 				}
 			} else {
 				if (c == str[0]) {
-					if (str.length != 1) {
-						dq.offer(new Data(c, 0));
-					}
+					dq.offer(new Data(c, 0));
 				} else {
 					dq.offer(new Data(c, -1));
 				}
 			}
+
+			if (!dq.isEmpty()) {
+				Data peek = dq.peekLast();
+				if (peek.idx == str.length - 1) {
+					for (int i = peek.idx; i >= 0; i--) {
+						dq.pollLast();
+					}
+				}
+			}
 		}
+
 		// System.out.println(dq);
 
 		if (!dq.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			while (!dq.isEmpty()) {
-				sb.append(dq.poll().c);
+				Data now = dq.poll();
+
+				sb.append(now.c);
 			}
 			System.out.println(sb);
 		} else {

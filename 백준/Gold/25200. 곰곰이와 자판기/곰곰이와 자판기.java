@@ -10,30 +10,29 @@ public class Main {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		Stack<int[]> stack = new Stack<>();
+		int[] U = new int[M];
+		int[] V = new int[M];
+
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
 			int u = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
-			stack.push(new int[]{u, v});
+			U[i] = u;
+			V[i] = v;
 		}
 
-		int[] dp = new int[N + 1];
-		for(int i = 1; i <= N; i++) {
-			dp[i] = i;
+		int[] drink = new int[N + 1];
+		for (int i = 1; i <= N; i++) {
+			drink[i] = i;
 		}
-		while(!stack.isEmpty()) {
-			int[] now = stack.pop();
-			int from = now[0];
-			int to = now[1];
-
-			dp[from] = dp[to];
+		for (int i = M - 1; i >= 0; i--) {
+			int u = U[i];
+			int v = V[i];
+			drink[u] = drink[v];
 		}
-		// System.out.println(Arrays.toString(dp));
-
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= N; i++) {
-			sb.append(dp[i]).append(" ");
+			sb.append(drink[i]).append(" ");
 		}
 		System.out.println(sb);
 	}

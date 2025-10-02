@@ -25,7 +25,9 @@ public class Main {
 		for (int i = 0; i <= N; i++) Arrays.fill(dp[i], Integer.MIN_VALUE);
 		for (int i = 0; i <= N; i++) {
 			dp[i][0] = 0;   // 0개 고르면 합 0
-			// dp[i][1] = sum[i];
+		}
+		for (int i = 1; i <= N; i++) {
+			dp[i][1] = sum[i];
 		}
 
 		for (int i = 1; i <= N; i++) {
@@ -37,9 +39,9 @@ public class Main {
 					if(dp[k-2][j-1] == Integer.MIN_VALUE) continue;
 					dp[i][j] = Math.max(dp[i][j], dp[k - 2][j - 1] + sum[i] - sum[k - 1]);
 				}
-				if (j == 1) {
-					dp[i][1] = Math.max(dp[i][1], sum[i]);
-				}
+				// if (j == 1) {
+				// 	dp[i][1] = Math.max(dp[i][1], sum[i]);
+				// }
 			}
 		}
 

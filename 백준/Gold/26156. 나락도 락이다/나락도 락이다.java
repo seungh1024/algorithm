@@ -7,36 +7,34 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		char[] data = br.readLine().toCharArray();
-		long[] dp = new long[N + 1];
-		dp[0] = 1;
-		long mod = 1000000007;
-		for (int i = 1; i <= N; i++) {
-			dp[i] = dp[i - 1]*2;
-			dp[i] %= mod;
-		}
+		char[] input = br.readLine().toCharArray();
+
+		long r = 0;
 		long o = 0;
 		long c = 0;
 		long k = 0;
-
-		long result = 0;
-		for (int i = N-1; i >= 0; i--) {
-			char d = data[i];
-			if (d == 'R') {
-				result = ((result + dp[i] * o % mod) % mod);
-
-				// System.out.println("cnt = "+cnt +", dp[i] = "+dp[i]);
-			} else if (d == 'O') {
-				o += c;
-				o %= mod;
-			} else if (d == 'C') {
-				c += k;
+		long mod = 1000000007;
+		long cnt = 1;
+		for (int i = 0; i < N; i++) {
+			if (input[i] == 'K') {
+				k += c;
+				k %= mod;
+			} else if (input[i] == 'C') {
+				c += o;
 				c %= mod;
-			} else if (d == 'K') {
-				k++;
+
+			} else if (input[i] == 'O') {
+				o += r;
+				o %= mod;
+
+			} else if (input[i] == 'R') {
+				r += cnt;
+				r %= mod;
 			}
-			// System.out.println("i = " + i + ", r = " + r + ", o = " + o + ", c = " + c + ", k = " + k);
+			cnt*=2;
+			cnt %= mod;
 		}
-		System.out.println(result);
+
+		System.out.println(k);
 	}
 }

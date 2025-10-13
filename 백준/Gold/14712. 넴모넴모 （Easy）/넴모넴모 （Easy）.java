@@ -41,7 +41,7 @@ public class Main {
 		}
 
 		data[x][y] = 1;
-		if (!nemmo()) {
+		if (!nemmo(x,y)) {
 			find(x, y + 1, cnt);
 			data[x][y] = 0;
 			find(x, y + 1, cnt);
@@ -53,22 +53,20 @@ public class Main {
 
 	}
 
-	public static boolean nemmo(){
-		for (int i = 1; i < N; i++) {
-			for (int j = 1; j < M; j++) {
-				int cnt = 0;
-				for (int d = 0; d < 4; d++) {
-					int nx = i+dx[d];
-					int ny = j + dy[d];
-					if (data[nx][ny] == 1) {
-						cnt++;
-					}
+	public static boolean nemmo(int x, int y){
+		if(x<=0 || y <= 0) return false;
 
-				}
-				if (cnt == 4) {
-					return true;
-				}
+		int cnt = 0;
+		for (int d = 0; d < 4; d++) {
+			int nx = x+dx[d];
+			int ny = y + dy[d];
+			if (data[nx][ny] == 1) {
+				cnt++;
 			}
+
+		}
+		if (cnt == 4) {
+			return true;
 		}
 
 		return false;

@@ -4,37 +4,39 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		char[] input = br.readLine().toCharArray();
+		int mod = 1_000_000_007;
+		int[] dp = new int[4];
+		char[] data = br.readLine().toCharArray();
 
-		long r = 0;
-		long o = 0;
-		long c = 0;
-		long k = 0;
-		long mod = 1000000007;
 		long cnt = 1;
-		for (int i = 0; i < N; i++) {
-			if (input[i] == 'K') {
-				k += c;
-				k %= mod;
-			} else if (input[i] == 'C') {
-				c += o;
-				c %= mod;
-
-			} else if (input[i] == 'O') {
-				o += r;
-				o %= mod;
-
-			} else if (input[i] == 'R') {
-				r += cnt;
-				r %= mod;
+		for (char c : data) {
+			switch(c) {
+				case 'R' -> {
+					dp[0] += cnt;
+					dp[0] %= mod;
+				}
+				case 'O' -> {
+					dp[1] += dp[0];
+					dp[1] %= mod;
+				}
+				case 'C' -> {
+					dp[2] += dp[1];
+					dp[2] %= mod;
+				}
+				case 'K' -> {
+					dp[3] += dp[2];
+					dp[3] %= mod;
+				}
 			}
 			cnt*=2;
-			cnt %= mod;
+			cnt%=mod;
 		}
 
-		System.out.println(k);
+		System.out.println(dp[3]);
+
 	}
 }

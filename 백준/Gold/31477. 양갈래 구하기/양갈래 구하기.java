@@ -6,7 +6,6 @@ import java.util.*;
 public class Main {
 	public static int N;
 	public static List<Data>[] list;
-	public static boolean[] visited;
 
 
 	public static void main(String[] args) throws IOException {
@@ -25,28 +24,22 @@ public class Main {
 			list[B].add(new Data(A, V));
 		}
 
-		visited = new boolean[N + 1];
-		visited[1] = true;
 		int result = find(1,Integer.MAX_VALUE);
 		System.out.println(result);
 	}
 
-	public static int find(int idx, int value) {
-		visited[idx] = true;
-		// System.out.println("idx = "+idx);
-		int min = value;
+	public static int find(int idx, int parent) {
 		int sum = 0;
+
 		for (Data next : list[idx]) {
-			if(visited[next.to]) continue;
-			// System.out.println("next = "+next);
-			sum += find(next.to, next.cost);
-			// System.out.println("idx = "+idx + ", sum = "+sum);
+			if(next.to == parent) continue;
+			sum += Math.min(next.cost, find(next.to, idx));
 		}
 
-		// System.out.println("sum = "+sum + ", value = "+value);
-		if(sum == 0)
+		if (sum == 0) {
 			sum = Integer.MAX_VALUE;
-		return Math.min(sum,value);
+		}
+		return sum;
 	}
 
 	public static class Data{

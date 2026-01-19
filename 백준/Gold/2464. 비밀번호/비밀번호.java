@@ -28,7 +28,7 @@ public class Main {
 
 	static long nearestHigher(long A, long one, long mask, int oneCnt) {
 		long x = A ^ mask;                 // (01)->(10)로 스왑 (호출 조건이 01일 때만!)
-		long idx = 0;
+		int idx = 0;
 		while (((1L << idx) & mask) == 0) {
 			if (oneCnt > 0) {
 				oneCnt--;

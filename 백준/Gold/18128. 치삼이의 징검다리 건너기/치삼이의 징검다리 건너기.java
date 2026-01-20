@@ -7,7 +7,7 @@ public class Main {
 	public static int N, W;
 	public static int[] dx = {0, 0, 1, -1, -1, -1, 1, 1};
 	public static int[] dy = {1, -1, 0, 0, -1, 1, -1, 1};
-	public static int[][] data;
+	public static int[][] data,water;
 	public static int[] wx,wy;
 
 	public static void main(String[] args) throws IOException {
@@ -23,71 +23,69 @@ public class Main {
 			wy[i] = Integer.parseInt(st.nextToken());
 		}
 		data = new int[N + 1][N + 1];
+		water = new int[N + 1][N + 1];
 		for (int i = 1; i <= N; i++) {
 			char[] input = br.readLine().toCharArray();
 			for (int j = 1; j <= N; j++) {
 				data[i][j] = input[j-1] - '0';
 			}
+			Arrays.fill(water[i], -1);
 		}
 
-
-		int time = find();
+		find();
+		int time = check();
 		System.out.println(time);
 	}
 
-	public static boolean check() {
-		Queue<int[]> q = new ArrayDeque<>();
+	public static int check() {
+		PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(o->o[2]));
 		boolean[][] visited = new boolean[N + 1][N + 1];
 		visited[1][1] = true;
-		q.offer(new int[] {1, 1});
-		// for (int i = 1; i <= N; i++) {
-		// 	System.out.println(Arrays.toString(data[i]));
-		// }
-		// System.out.println("---------");
+		q.offer(new int[] {1, 1, 0});
+		int[][] distance = new int[N + 1][N + 1];
+		for (int i = 1; i <= N; i++) {
+			Arrays.fill(distance[i], Integer.MAX_VALUE);
+		}
+
 		while (!q.isEmpty()) {
 			int[] now = q.poll();
 
 			if(now[0] == N && now[1] == N) {
-				return true;
+				return now[2];
 			}
+			if(distance[now[0]][now[1]] < now[2]) continue;
 
 			for (int d = 0; d < 8; d++) {
 				int nx = now[0]+dx[d];
 				int ny = now[1]+dy[d];
-
-				if (nx >= 1 && nx <= N && ny >= 1 && ny <= N && !visited[nx][ny] && data[nx][ny] == 2) {
-					visited[nx][ny] = true;
-					q.offer(new int[] {nx, ny});
+				if (nx >= 1 && nx <= N && ny >= 1 && ny <= N &&  data[nx][ny] == 1) {
+					int nc = Math.max(now[2], water[nx][ny]);
+					if (distance[nx][ny] > nc) {
+						distance[nx][ny] = nc;
+						q.offer(new int[] {nx, ny,nc});
+					}
 				}
 			}
 		}
 
-		return false;
+		return -1;
 	}
 
-	public static int find() {
-		int time = 0;
+	public static void find() {
 		Queue<int[]> q = new ArrayDeque<>();
 		boolean[][] visited = new boolean[N + 1][N + 1];
 		for (int i = 0; i < W; i++) {
 			q.offer(new int[] {wx[i], wy[i]});
 			visited[wx[i]][wy[i]] = true;
-			if (data[wx[i]][wy[i]] == 1) {
-				
-				data[wx[i]][wy[i]] = 2;
-			}
+			water[wx[i]][wy[i]] = 0;
 		}
+		water[1][1] = 0;
+		water[N][N] = 0;
 		visited[1][1] = true;
 		visited[N][N] = true;
-		data[1][1] = 2;
-		data[N][N] = 2;
+
 
 		while (!q.isEmpty()) {
-			if ((data[1][2] == 2 || data[2][1] == 2 || data[2][2] == 2) && (data[N][N-1] == 2 || data[N-1][N] == 2 || data[N-1][N-1] == 2)) {
-				if (check()) {
-					return time;
-				}
-			}
 			int size = q.size();
 			for (int s = 0; s < size; s++) {
 				int[] now = q.poll();
@@ -97,18 +95,11 @@ public class Main {
 					int ny = now[1]+dy[d];
 					if (nx >= 1 && nx <= N && ny >= 1 && ny <= N && !visited[nx][ny]) {
 						visited[nx][ny] = true;
-						if (data[nx][ny] == 1) {
-
-							data[nx][ny] = 2;
-						}
+						water[nx][ny] = water[now[0]][now[1]] + 1;
 						q.offer(new int[] {nx, ny});
 					}
 				}
 			}
-			time++;
-
 		}
-
-		return -1;
 	}
 }

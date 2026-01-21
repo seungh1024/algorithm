@@ -6,59 +6,78 @@ import java.util.*;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine());
 		for (int t = 0; t < T; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int N = Integer.parseInt(st.nextToken());
 			int K = Integer.parseInt(st.nextToken());
-			int[] data = new int[N + 1];
-			int[] two = new int[N + 1];
-			int[] five = new int[N + 1];
+
+			Data[] data = new Data[N + 1];
 			st = new StringTokenizer(br.readLine());
 			for (int i = 1; i <= N; i++) {
-				data[i] = Integer.parseInt(st.nextToken());
-				int a = 0;
-				int num = data[i];
-				while (num % 2 == 0) {
-					a++;
-					num /= 2;
-				}
-				two[i] = a;
-				int b = 0;
-				num = data[i];
-				while (num % 5 == 0) {
-					b++;
-					num /= 5;
-				}
-				five[i] = b;
+				int num = Integer.parseInt(st.nextToken());
+				int two = getCnt(num, 2);
+				int five = getCnt(num, 5);
+				data[i] = new Data(two, five);
 			}
 
-			// System.out.println(Arrays.toString(two));
-			// System.out.println(Arrays.toString(five));
-			int[][] dp = new int[N + 1][2];
+			Data[] dp = new Data[N + 1];
 			for (int i = 1; i <= N; i++) {
-				Arrays.fill(dp[i], Integer.MAX_VALUE);
+				dp[i] = new Data(Integer.MAX_VALUE, Integer.MAX_VALUE);
 			}
-			dp[1][0] = two[1];
-			dp[1][1] = five[1];
+			dp[1] = data[1];
+			for (int i = 2; i <= N; i++) {
+				// System.out.println("i = "+i + " ==============");
+				int range = Math.max(1, i - K - 1);
+				// System.out.println("range = "+range);
+				for (int j = i - 1; j >= range; j--) {
+					if(i-j >K) continue;
+					if(dp[j].two == Integer.MAX_VALUE || dp[j].five == Integer.MAX_VALUE) continue;
 
-			for (int i = 1; i <= N; i++) {
-				if(dp[i][0] == Integer.MAX_VALUE || dp[i][1] == Integer.MAX_VALUE)continue;
-				for (int k = 1; k <= K; k++) {
-					if(i+k >N)continue;
-					// int plus = two[i + k] + five[i + k];
+					int two = dp[j].two + data[i].two;
+					int five = dp[j].five + data[i].five;
+					int last = Math.min(two, five);
+					int now = Math.min(dp[i].two, dp[i].five);
 
-					dp[i + k][0] = Math.min(dp[i + k][0], dp[i][0]+two[i+k]);
-					dp[i + k][1] = Math.min(dp[i + k][1], dp[i][1]+five[i+k]);
+					int minTwo = Math.min(two, dp[i].two);
+					int minFive = Math.min(five, dp[i].five);
+					dp[i].two = minTwo;
+					dp[i].five = minFive;
 				}
+				// System.out.println(Arrays.toString(dp));
 			}
-			// for (int i = 1; i <= N; i++) {
-			// 	System.out.println(Arrays.toString(dp[i]));
-			// }
 
-			sb.append(Math.min(dp[N][0], dp[N][1])).append("\n");
+
+			sb.append(Math.min(dp[N].five, dp[N].two)).append("\n");
 		}
 		System.out.println(sb);
+	}
+
+	public static int getCnt(int num, int div) {
+		int cnt = 0;
+		while(num % div == 0) {
+			num /= div;
+			cnt++;
+		}
+		return cnt;
+	}
+
+	public static class Data{
+		int two;
+		int five;
+
+		@Override
+		public String toString() {
+			return "Data{" +
+				"two=" + two +
+				", five=" + five +
+				'}';
+		}
+
+		public Data(int two, int five) {
+			this.two = two;
+			this.five = five;
+		}
 	}
 }

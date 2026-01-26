@@ -1,46 +1,49 @@
+
+
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int N, T;
-	public static List<Carrot> list;
-
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		T = Integer.parseInt(st.nextToken());
-		list = new ArrayList<>();
+		int N = Integer.parseInt(st.nextToken());
+		int T = Integer.parseInt(st.nextToken());
+
+		long cnt = T - N;
+		PriorityQueue<Data> pq = new PriorityQueue<>(Comparator.comparingLong(o->o.p));
+
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			long w = Long.parseLong(st.nextToken());
 			long p = Long.parseLong(st.nextToken());
-			list.add(new Carrot(w, p));
+			pq.offer(new Data(w, p));
 		}
 
-		list.sort(Comparator.comparing((Carrot carrot) -> carrot.p));
-		long temp = T-N;
 		long result = 0;
-		for (Carrot carrot : list) {
-			// System.out.println(carrot);
-			result += carrot.w+(carrot.p*temp);
-			temp++;
+		while (!pq.isEmpty()) {
+			Data now = pq.poll();
+			result += now.w+ now.p*cnt;
+			cnt++;
 		}
 		System.out.println(result);
 	}
 
-	public static class Carrot{
+	public static class Data {
 		long w;
 		long p;
 
-		public Carrot(long w, long p) {
-			this.w = w;
-			this.p = p;
+		@Override
+		public String toString() {
+			return "Data{" +
+				"w=" + w +
+				", p=" + p +
+				'}';
 		}
 
-
-		public String toString() {
-			return " w = "+w + ", p = "+p;
+		public Data(long w, long p) {
+			this.w = w;
+			this.p = p;
 		}
 	}
 }

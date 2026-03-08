@@ -23,40 +23,26 @@ public class Main {
 			System.out.println(0);
 			return;
 		}
-		long[][] dp = new long[N + 1][M+1];
-		for (int i = 0; i <= N; i++) {
-			Arrays.fill(dp[i], Long.MAX_VALUE);
-			dp[i][0] = 0;
-		}
-		dp[0][0] = 0;
+		long[] dp = new long[M+1];
+		Arrays.fill(dp, Long.MAX_VALUE);
+		dp[0] = 0;
 		for (int i = 1; i <= N; i++) {
 			int a = A[i];
 			int b = B[i];
-
-			for (int j = 0; j <= M; j++) {
-				dp[i][j] = Math.min(dp[i][j], dp[i - 1][j]);
-				if(j-a <0) continue;
-
-				if (j - a == 0) {
-					dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - a] + b);
-				} else {
-
-					if(dp[i-1][j-a+1] == Long.MAX_VALUE) continue;
-					// if (i == 3) {
-					// 	System.out.println("j = "+j + ", a = "+a +", b = "+b);
-					// }
-					dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - a+1] + b);
-				}
-
+			if(a > M) continue;
+			for (int j = M; j > a; j--) {
+				if(j-a+1>=M || dp[j-a+1] == Long.MAX_VALUE) continue;
+				dp[j] = Math.min(dp[j], dp[j - a + 1] + b);
 			}
+			dp[a] = Math.min(dp[a], b);
 			// System.out.println(Arrays.toString(dp[i]));
 		}
 
-
-		if (dp[N][M] == Long.MAX_VALUE) {
-			dp[N][M] = -1;
+		long result = dp[M];
+		if (dp[M] == Long.MAX_VALUE) {
+			result = -1;
 		}
-		System.out.println(dp[N][M]);
 
+		System.out.println(result);
 	}
 }
